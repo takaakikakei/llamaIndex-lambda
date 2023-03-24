@@ -1,0 +1,16 @@
+{
+  "name": "llamaindex-lambda",
+  "version": "1.0.0",
+  "dependencies": {
+    "serverless": "^3.28.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
+    "npm-check-updates": "^16.8.0",
+    "prettier": "^2.8.6",
+    "serverless-prune-plugin": "^2.0.2",
+    "serverless-python-requirements": "^6.0.0",
+    "serverless-step-functions": "^3.13.0"
+  }
+}

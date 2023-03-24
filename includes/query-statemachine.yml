@@ -1,0 +1,21 @@
+name: ${self:service}-query-${self:provider.stage}
+definition:
+  StartAt: QueryFunc
+  States:
+    QueryFunc:
+      Type: Task
+      Parameters:
+        input.$: $
+        execution.$: $$
+      Resource:
+        Fn::GetAtt: [query, Arn]
+      Catch:
+        - ErrorEquals:
+            - States.ALL
+          ResultPath: $.error_info
+          Next: FailState
+      Next: SuccessState
+    SuccessState:
+      Type: Succeed
+    FailState:
+      Type: Fail

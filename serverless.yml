@@ -1,0 +1,55 @@
+service: llamaindex-lambda
+frameworkVersion: "3"
+provider:
+  name: aws
+  runtime: python3.9
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, "ap-northeast-1"}
+  timeout: 180
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - ssm:GetParameter
+            - s3:PutObject
+            - s3:GetObject
+            - s3:ListBucket
+          Resource:
+            - "*"
+  layers:
+    - Ref: PythonRequirementsLambdaLayer
+    - arn:aws:lambda:${aws:region}:017000801446:layer:AWSLambdaPowertoolsPythonV2:14
+functions:
+  query:
+    handler: src/query.handler
+    ephemeralStorageSize: 10240
+    provisionedConcurrency: 1
+    environment:
+      OPENAI_API_KEY: ${ssm(${self:provider.region}):/${self:service}/${self:provider.stage}/OPENAI_API_KEY}
+      INDEX_BUCKER_NAME: ${self:custom.s3.environment.IndexBucketName}
+      POWERTOOLS_SERVICE_NAME: ${self:service}-${self:provider.stage}-query
+plugins:
+  - serverless-python-requirements
+  - serverless-prune-plugin
+  - serverless-step-functions
+stepFunctions:
+  stateMachines:
+    Query: ${file(includes/query-statemachine.yml)}
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    zip: true
+    slim: true
+    layer: true
+  prune:
+    automatic: true
+    number: 3
+  s3:
+    environment:
+      IndexBucketName: { バケット名を記入 } # TODO
+package:
+  patterns:
+    - "!./**"
+    - ./src/**/*.py
+    - "!src/**/__pycache__/**"

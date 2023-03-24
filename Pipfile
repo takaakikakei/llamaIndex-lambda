@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+boto3 = "*"
+llama-index = "*"
+openai = "*"
+html2text = "*"
+
+[dev-packages]
+aws-lambda-powertools = {extras = ["tracer"], version = "*"}
+black = "*"
+mypy = "*"
+isort = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+pyproject-flake8 = "*"
+pyproject-autoflake = "*"
+flake8 = "*"
+autoflake8 = "*"
+
+[requires]
+python_version = "3.9"
